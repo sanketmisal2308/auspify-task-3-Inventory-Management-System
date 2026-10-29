@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">📦</div>
+                <div>
+                    <h2>StockWise</h2>
+                    <p>Inventory Manager</p>
+                </div>
+            </div>
+
+            <nav>
+                <a href="#dashboard" class="nav-link active">🏠 Dashboard</a>
+                <a href="#inventory" class="nav-link">📦 Inventory</a>
+                <a href="#reports" class="nav-link">📊 Reports</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>Software Development</p>
+                <strong>Auspify Internship · Task 3</strong>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">INVENTORY MANAGEMENT</p>
+                    <h1>Inventory Dashboard</h1>
+                    <p class="subtitle">Monitor products, stock levels and inventory value.</p>
+                </div>
+                <button class="primary-btn" id="add-product-btn">
+                    + Add Product
+                </button>
+            </header>
+
+            <section id="dashboard" class="section">
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <p>Total Products</p>
+                        <h2 id="total-products">0</h2>
+                        <span>Products in inventory</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <p>Total Units in Stock</p>
+                        <h2 id="total-units">0</h2>
+                        <span>Available quantity</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <p>Low Stock Items</p>
+                        <h2 id="low-stock">0</h2>
+                        <span>Products needing attention</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <p>Total Stock Value</p>
+                        <h2 id="stock-value">₹0.00</h2>
+                        <span>Quantity × unit price</span>
+                    </article>
+                </div>
+            </section>
+
+            <section id="inventory" class="panel section">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Product Inventory</h2>
+                        <p>Manage and monitor all your products.</p>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <input
+                        type="search"
+                        id="search-input"
+                        placeholder="Search by product name, ID or category..."
+                        aria-label="Search products"
+                    >
+
+                    <select id="category-filter" aria-label="Filter by category">
+                        <option value="">All Categories</option>
+                    </select>
+
+                    <select id="stock-filter" aria-label="Filter by stock status">
+                        <option value="">All Stock Status</option>
+                        <option value="in">In Stock</option>
+                        <option value="low">Low Stock</option>
+                        <option value="out">Out of Stock</option>
+                    </select>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Stock Value</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product-table-body"></tbody>
+                    </table>
+                </div>
+
+                <p id="empty-message" class="empty-message">
+                    No products found. Add your first product to get started.
+                </p>
+            </section>
+
+            <section id="reports" class="panel section">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Inventory Reports</h2>
+                        <p>Review stock details and export your inventory.</p>
+                    </div>
+                    <button class="secondary-btn" id="export-btn">
+                        Export CSV
+                    </button>
+                </div>
+
+                <div class="report-grid">
+                    <div class="report-card">
+                        <span>Total Inventory Items</span>
+                        <strong id="report-products">0</strong>
+                    </div>
+                    <div class="report-card">
+                        <span>Total Inventory Value</span>
+                        <strong id="report-value">₹0.00</strong>
+                    </div>
+                    <div class="report-card">
+                        <span>Out of Stock</span>
+                        <strong id="report-out">0</strong>
+                    </div>
+                </div>
+
+                <h3 class="subheading">Stock Summary by Category</h3>
+                <div id="category-summary" class="category-summary"></div>
+            </section>
+
+            <footer class="footer">
+                Inventory Management System · Built for Auspify Technologies Internship
+            </footer>
+        </main>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div class="modal-backdrop" id="product-modal" hidden>
+        <div class="modal">
+            <div class="modal-heading">
+                <div>
+                    <h2 id="modal-title">Add New Product</h2>
+                    <p>Enter the product information below.</p>
+                </div>
+                <button type="button" class="close-btn" id="close-modal"
+                    aria-label="Close form">×</button>
+            </div>
+
+            <form id="product-form">
+                <label for="product-id">Product ID</label>
+                <input id="product-id" type="text" required
+                    placeholder="e.g. PRD-101">
+
+                <label for="product-name">Product Name</label>
+                <input id="product-name" type="text" required
+                    placeholder="e.g. Wireless Mouse">
+
+                <label for="product-category">Category</label>
+                <input id="product-category" type="text" required
+                    placeholder="e.g. Electronics">
+
+                <div class="form-row">
+                    <div>
+                        <label for="product-quantity">Quantity</label>
+                        <input id="product-quantity" type="number"
+                            min="0" step="1" required placeholder="0">
+                    </div>
+
+                    <div>
+                        <label for="product-price">Unit Price (₹)</label>
+                        <input id="product-price" type="number"
+                            min="0" step="0.01" required placeholder="0.00">
+                    </div>
+                </div>
+
+                <label for="product-threshold">Low Stock Threshold</label>
+                <input id="product-threshold" type="number"
+                    min="0" step="1" required value="5">
+
+                <div class="modal-actions">
+                    <button type="button" class="secondary-btn" id="cancel-modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="primary-btn" id="save-product-btn">
+                        Save Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Stock Update Modal -->
+    <div class="modal-backdrop" id="stock-modal" hidden>
+        <div class="modal small-modal">
+            <div class="modal-heading">
+                <div>
+                    <h2>Update Stock</h2>
+                    <p id="stock-product-name">Product</p>
+                </div>
+                <button type="button" class="close-btn" id="close-stock-modal"
+                    aria-label="Close stock form">×</button>
+            </div>
+
+            <form id="stock-form">
+                <label for="stock-action">Stock Operation</label>
+                <select id="stock-action" required>
+                    <option value="add">Add Stock</option>
+                    <option value="remove">Remove Stock</option>
+                </select>
+
+                <label for="stock-quantity">Quantity</label>
+                <input id="stock-quantity" type="number" min="1"
+                    step="1" required placeholder="Enter quantity">
+
+                <div class="modal-actions">
+                    <button type="button" class="secondary-btn" id="cancel-stock">
+                        Cancel
+                    </button>
+                    <button type="submit" class="primary-btn">
+                        Update Stock
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
